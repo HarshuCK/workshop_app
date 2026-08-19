@@ -11,6 +11,7 @@ import type {
   CategoryAllocation,
   ScenarioEvent,
 } from '../../data/resourceScenarios'
+import { useLanguage } from '../../i18n/LanguageContext'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -88,6 +89,7 @@ function ResourceMeter({
   format: (v: number) => string
   color: string
 }) {
+  const { t } = useLanguage()
   const pct = cap > 0 ? Math.min(100, (used / cap) * 100) : 0
   const over = used > cap
   return (
@@ -108,7 +110,7 @@ function ResourceMeter({
         />
       </div>
       <div className="mt-1 text-right text-xs text-slate-400">
-        {format(Math.max(0, cap - used))} remaining
+        {format(Math.max(0, cap - used))} {t('act8.remaining')}
       </div>
     </div>
   )
@@ -183,13 +185,12 @@ function ResourceRow({
 // ── ScenarioSelector ──────────────────────────────────────────────────────────
 
 function ScenarioSelector({ onSelect }: { onSelect: (s: ResourceScenario) => void }) {
+  const { t } = useLanguage()
   return (
     <div>
       <div className="mb-6 text-center">
-        <h2 className="text-xl font-bold text-slate-900 mb-1">Choose a Scenario</h2>
-        <p className="text-sm text-slate-500">
-          Pick one situation and allocate your resources across key areas.
-        </p>
+        <h2 className="text-xl font-bold text-slate-900 mb-1">{t('act8.chooseScenario')}</h2>
+        <p className="text-sm text-slate-500">{t('act8.pickOne')}</p>
       </div>
       <div className="grid gap-4 sm:grid-cols-3">
         {RESOURCE_SCENARIOS.map(s => {
@@ -206,19 +207,19 @@ function ScenarioSelector({ onSelect }: { onSelect: (s: ResourceScenario) => voi
               <p className="text-xs text-slate-500 mb-4 leading-relaxed">{s.tagline}</p>
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-500">Budget</span>
+                  <span className="text-slate-500">{t('act8.budget')}</span>
                   <span className="font-semibold text-slate-700">{formatINR(s.resources.budget)}</span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-500">Team size</span>
-                  <span className="font-semibold text-slate-700">{s.resources.team} people</span>
+                  <span className="text-slate-500">{t('act8.team')}</span>
+                  <span className="font-semibold text-slate-700">{s.resources.team}</span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-500">Effort pool</span>
+                  <span className="text-slate-500">{t('act8.effort')}</span>
                   <span className="font-semibold text-slate-700">{s.resources.effort} pts</span>
                 </div>
                 <div className="flex justify-between text-xs pt-1 border-t border-slate-100">
-                  <span className="text-slate-500">Areas to cover</span>
+                  <span className="text-slate-500">{t('act8.areasCover')}</span>
                   <span className="font-semibold text-slate-700">{catCount}</span>
                 </div>
               </div>
@@ -263,6 +264,7 @@ function CategoryCard({
   onIncrement: (catId: string, r: Resource) => void
   metMin: boolean
 }) {
+  const { t } = useLanguage()
   const [open, setOpen] = useState(true)
 
   return (
@@ -282,7 +284,7 @@ function CategoryCard({
         <span className="flex-1 font-semibold text-sm text-slate-800">{catName}</span>
         {metMin && (
           <span className="text-xs font-medium text-green-600 bg-green-100 px-2 py-0.5 rounded-full">
-            ✓ Covered
+            {t('act8.coveredBadge')}
           </span>
         )}
         {open ? (
@@ -298,7 +300,7 @@ function CategoryCard({
           <div className="divide-y divide-slate-100">
             <ResourceRow
               resource="budget"
-              label="Budget"
+              label={t('act8.budget')}
               value={allocation.budget}
               minimum={minBudget}
               format={v => formatINR(v)}
@@ -308,7 +310,7 @@ function CategoryCard({
             />
             <ResourceRow
               resource="team"
-              label="Team"
+              label={t('act8.team')}
               value={allocation.team}
               minimum={minTeam}
               format={v => `${v}p`}
@@ -318,7 +320,7 @@ function CategoryCard({
             />
             <ResourceRow
               resource="effort"
-              label="Effort"
+              label={t('act8.effort')}
               value={allocation.effort}
               minimum={minEffort}
               format={v => `${v} pts`}
@@ -342,16 +344,17 @@ function AllocationSummaryTable({
   scenario: ResourceScenario
   allocations: AllocMap
 }) {
+  const { t } = useLanguage()
   return (
     <div className="overflow-x-auto rounded-xl border border-slate-200">
       <table className="w-full text-sm">
         <thead>
           <tr className="bg-slate-50 border-b border-slate-200">
-            <th className="text-left px-4 py-3 font-semibold text-slate-600">Area</th>
-            <th className="text-right px-4 py-3 font-semibold text-slate-600">Budget</th>
-            <th className="text-right px-4 py-3 font-semibold text-slate-600">Team</th>
-            <th className="text-right px-4 py-3 font-semibold text-slate-600">Effort</th>
-            <th className="text-right px-4 py-3 font-semibold text-slate-600">Status</th>
+            <th className="text-left px-4 py-3 font-semibold text-slate-600">{t('act8.area')}</th>
+            <th className="text-right px-4 py-3 font-semibold text-slate-600">{t('act8.budget')}</th>
+            <th className="text-right px-4 py-3 font-semibold text-slate-600">{t('act8.team')}</th>
+            <th className="text-right px-4 py-3 font-semibold text-slate-600">{t('act8.effort')}</th>
+            <th className="text-right px-4 py-3 font-semibold text-slate-600">{t('act8.status')}</th>
           </tr>
         </thead>
         <tbody>
@@ -383,7 +386,7 @@ function AllocationSummaryTable({
                         : 'bg-slate-100 text-slate-500'
                     }`}
                   >
-                    {met ? 'Covered' : 'Needs more'}
+                    {met ? t('act8.covered') : t('act8.needsMore')}
                   </span>
                 </td>
               </tr>
@@ -404,6 +407,7 @@ function AllocationView({
   scenario: ResourceScenario
   onChangeScenario: () => void
 }) {
+  const { t } = useLanguage()
   const [allocations, setAllocations] = useState<AllocMap>(() => emptyAlloc(scenario))
   const [activeEvent, setActiveEvent] = useState<ScenarioEvent | null>(null)
   const [showResult, setShowResult] = useState(false)
@@ -511,7 +515,7 @@ function AllocationView({
           onClick={onChangeScenario}
           className="text-xs font-medium text-indigo-600 hover:text-indigo-700 border border-indigo-200 hover:border-indigo-300 px-3 py-1.5 rounded-lg transition-colors"
         >
-          Change Scenario
+          {t('act8.changeScenario')}
         </button>
       </div>
 
@@ -541,25 +545,25 @@ function AllocationView({
       {/* Resource overview */}
       <div className="mb-5 rounded-2xl border border-slate-200 bg-white p-4">
         <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">
-          Resource Overview
+          {t('act8.resourceOverview')}
         </h3>
         <div className="flex flex-col sm:flex-row gap-4">
           <ResourceMeter
-            label="Budget"
+            label={t('act8.budget')}
             used={usedBudget}
             cap={cap.budget}
             format={v => formatINR(v)}
             color="#6366f1"
           />
           <ResourceMeter
-            label="Team"
+            label={t('act8.team')}
             used={usedTeam}
             cap={cap.team}
-            format={v => `${v} people`}
+            format={v => `${v}p`}
             color="#3b82f6"
           />
           <ResourceMeter
-            label="Effort"
+            label={t('act8.effort')}
             used={usedEffort}
             cap={cap.effort}
             format={v => `${v} pts`}
@@ -572,12 +576,12 @@ function AllocationView({
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-slate-700">
-            {coveredCount} / {totalCats} areas meet minimum requirements
+            {t('act8.coverageStatus').replace('{n}', String(coveredCount)).replace('{total}', String(totalCats))}
           </span>
           {allCovered && (
             <span className="inline-flex items-center gap-1 text-xs font-medium text-green-700 bg-green-100 px-2 py-0.5 rounded-full">
               <Sparkles className="w-3 h-3" />
-              All covered
+              {t('act8.allCovered')}
             </span>
           )}
         </div>
@@ -586,20 +590,20 @@ function AllocationView({
             onClick={applyMinimums}
             className="text-xs font-medium text-slate-600 hover:text-slate-900 border border-slate-200 hover:border-slate-300 bg-white px-3 py-1.5 rounded-lg transition-colors"
           >
-            Apply Minimums
+            {t('act8.applyMinimums')}
           </button>
           <button
             onClick={clearAll}
             className="text-xs font-medium text-slate-500 hover:text-slate-700 border border-slate-200 hover:border-slate-300 bg-white px-3 py-1.5 rounded-lg transition-colors"
           >
-            Clear All
+            {t('act8.clearAll')}
           </button>
           <button
             onClick={drawEvent}
             className="text-xs font-medium text-amber-700 hover:text-amber-900 border border-amber-200 hover:border-amber-300 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1"
           >
             <Shuffle className="w-3.5 h-3.5" />
-            Draw a Situation
+            {t('act8.drawSituation')}
           </button>
         </div>
       </div>
@@ -637,22 +641,22 @@ function AllocationView({
         <div className="hidden lg:block lg:w-80 shrink-0 space-y-4">
           <div className="rounded-2xl border border-slate-200 bg-white p-4 sticky top-4">
             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">
-              Allocation Summary
+              {t('act8.allocationSummary')}
             </h3>
             <AllocationSummaryTable scenario={scenario} allocations={allocations} />
 
             {/* Totals */}
             <div className="mt-3 pt-3 border-t border-slate-100 space-y-1">
               <div className="flex justify-between text-xs">
-                <span className="text-slate-500">Total budget used</span>
+                <span className="text-slate-500">{t('act8.budgetUsed')}</span>
                 <span className="font-semibold text-slate-700">{formatINR(usedBudget)}</span>
               </div>
               <div className="flex justify-between text-xs">
-                <span className="text-slate-500">Total team assigned</span>
+                <span className="text-slate-500">{t('act8.teamAssigned')}</span>
                 <span className="font-semibold text-slate-700">{usedTeam}p</span>
               </div>
               <div className="flex justify-between text-xs">
-                <span className="text-slate-500">Total effort used</span>
+                <span className="text-slate-500">{t('act8.effortUsed')}</span>
                 <span className="font-semibold text-slate-700">{usedEffort} pts</span>
               </div>
             </div>
@@ -665,45 +669,40 @@ function AllocationView({
         <div className="mt-6 rounded-2xl border border-indigo-200 bg-indigo-50 p-6 text-center">
           <div className="text-2xl mb-2">🎉</div>
           <h3 className="text-base font-bold text-indigo-900 mb-2">
-            All areas are covered!
+            {t('act8.allAreasCovered')}
           </h3>
-          <p className="text-sm text-indigo-700 leading-relaxed max-w-md mx-auto mb-4">
-            Every area meets its minimum resource requirement. Consider whether some areas could
-            benefit from more resources, or whether you want to keep a larger buffer elsewhere.
-          </p>
           <button
             onClick={() => setShowResult(true)}
             className="text-sm font-semibold text-indigo-700 hover:text-indigo-900 border border-indigo-300 hover:border-indigo-400 bg-white px-4 py-2 rounded-xl transition-colors"
           >
-            View Full Allocation Breakdown
+            {t('act8.viewFullBreakdown')}
           </button>
         </div>
       )}
 
       {showResult && (
         <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5">
-          <h3 className="text-sm font-bold text-slate-700 mb-3">Your Full Allocation</h3>
+          <h3 className="text-sm font-bold text-slate-700 mb-3">{t('act8.yourFullAllocation')}</h3>
           <AllocationSummaryTable scenario={scenario} allocations={allocations} />
           <div className="mt-4 grid grid-cols-3 gap-3">
             <div className="text-center rounded-xl bg-indigo-50 px-3 py-3">
-              <div className="text-xs text-indigo-500 mb-1">Budget used</div>
+              <div className="text-xs text-indigo-500 mb-1">{t('act8.budgetUsed')}</div>
               <div className="font-bold text-indigo-800 text-sm tabular-nums">{formatINR(usedBudget)}</div>
               <div className="text-xs text-indigo-400 mt-0.5">of {formatINR(cap.budget)}</div>
             </div>
             <div className="text-center rounded-xl bg-blue-50 px-3 py-3">
-              <div className="text-xs text-blue-500 mb-1">Team assigned</div>
+              <div className="text-xs text-blue-500 mb-1">{t('act8.teamAssigned')}</div>
               <div className="font-bold text-blue-800 text-sm tabular-nums">{usedTeam}p</div>
-              <div className="text-xs text-blue-400 mt-0.5">of {cap.team} people</div>
+              <div className="text-xs text-blue-400 mt-0.5">of {cap.team}</div>
             </div>
             <div className="text-center rounded-xl bg-green-50 px-3 py-3">
-              <div className="text-xs text-green-500 mb-1">Effort used</div>
+              <div className="text-xs text-green-500 mb-1">{t('act8.effortUsed')}</div>
               <div className="font-bold text-green-800 text-sm tabular-nums">{usedEffort} pts</div>
               <div className="text-xs text-green-400 mt-0.5">of {cap.effort} pts</div>
             </div>
           </div>
           <p className="mt-4 text-xs text-slate-500 leading-relaxed">
-            This is your allocation plan. There is no single correct answer — different teams
-            make different trade-offs based on their priorities, risk tolerance, and context.
+            {t('act8.disclaimer')}
           </p>
         </div>
       )}

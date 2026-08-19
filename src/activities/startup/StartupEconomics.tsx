@@ -8,6 +8,7 @@ import {
   calculateCostScenarios,
 } from '../../utils/unitEconomics'
 import type { UnitEconomicsInputs } from '../../utils/unitEconomics'
+import { useLanguage } from '../../i18n/LanguageContext'
 
 // ── Presets ───────────────────────────────────────────────────────────────────
 
@@ -155,9 +156,11 @@ function PresetButtons({
   activeLabel: string | null
   onSelect: (p: Preset) => void
 }) {
+  const { t } = useLanguage()
+  const presetLabels = [t('act9.presets.subscription'), t('act9.presets.lowPriceHighVol'), t('act9.presets.premium')]
   return (
     <div className="flex flex-wrap gap-2">
-      {PRESETS.map(p => (
+      {PRESETS.map((p, i) => (
         <button
           key={p.label}
           onClick={() => onSelect(p)}
@@ -167,7 +170,7 @@ function PresetButtons({
               : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'
           }`}
         >
-          {p.label}
+          {presetLabels[i]}
         </button>
       ))}
     </div>
@@ -276,23 +279,24 @@ function BusinessFlow({
   marketingSpend: number
   operatingResult: number
 }) {
+  const { t } = useLanguage()
   const isProfit = operatingResult >= 0
   const isLoss = operatingResult < 0
 
   return (
     <div className="space-y-0.5">
-      <FlowRow label="Monthly Revenue" value={revenue} />
+      <FlowRow label={t('act9.monthlyRevenue')} value={revenue} />
       <Arrow />
       <FlowRow label="Variable Costs" value={variableCosts} isSubtraction />
       <Arrow />
-      <FlowRow label="Gross Profit" value={grossProfit} />
+      <FlowRow label={t('act9.grossProfit')} value={grossProfit} />
       <Arrow />
       <FlowRow label="Fixed Monthly Costs" value={fixedCosts} isSubtraction />
       <Arrow />
       <FlowRow label="Marketing Spend" value={marketingSpend} isSubtraction />
       <Arrow />
       <FlowRow
-        label={isProfit ? 'Operating Profit' : isLoss ? 'Operating Loss' : 'Break-even'}
+        label={isProfit ? t('act9.operatingProfit') : isLoss ? t('act9.operatingLoss') : t('act9.operatingResult')}
         value={Math.abs(operatingResult)}
         isResult
         positive={isProfit && operatingResult !== 0}
@@ -397,6 +401,7 @@ function ComparisonBadge({ value }: { value: number }) {
 // ── Main component ────────────────────────────────────────────────────────────
 
 export function StartupEconomics() {
+  const { t } = useLanguage()
   const [inputs, setInputs] = useState<UnitEconomicsInputs>(DEFAULT_INPUTS)
   const [activePreset, setActivePreset] = useState<string | null>(PRESETS[0].label)
 
@@ -434,19 +439,15 @@ export function StartupEconomics() {
     <div className="space-y-8">
       {/* Title */}
       <div>
-        <h2 className="text-xl font-bold text-slate-900">
-          What makes a startup financially sustainable?
-        </h2>
-        <p className="text-sm text-slate-500 mt-1">
-          Change the numbers and see how revenue, costs and break-even move.
-        </p>
+        <h2 className="text-xl font-bold text-slate-900">{t('act9.intro')}</h2>
+        <p className="text-sm text-slate-500 mt-1">{t('act9.subIntro')}</p>
       </div>
 
       {/* Presets + Reset */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
-            Example Scenarios
+            {t('act9.exampleScenarios')}
           </div>
           <PresetButtons activeLabel={activePreset} onSelect={applyPreset} />
         </div>
@@ -465,7 +466,7 @@ export function StartupEconomics() {
         <div className="lg:w-80 shrink-0 space-y-5">
           <div className="rounded-2xl border border-slate-200 bg-white p-5 space-y-4">
             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wide">
-              Revenue Inputs
+              {t('act9.revenueInputs')}
             </h3>
             <NumberInput
               id="price"
@@ -520,7 +521,7 @@ export function StartupEconomics() {
 
           <div className="rounded-2xl border border-slate-200 bg-white p-5 space-y-4">
             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wide">
-              Cost Inputs
+              {t('act9.costInputs')}
             </h3>
             <NumberInput
               id="variableCost"
@@ -552,7 +553,7 @@ export function StartupEconomics() {
 
           <div className="rounded-2xl border border-slate-200 bg-white p-5 space-y-4">
             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wide">
-              Acquisition & Churn
+              {t('act9.acquisitionChurn')}
             </h3>
             <NumberInput
               id="cac"
@@ -600,45 +601,45 @@ export function StartupEconomics() {
           {/* Key metrics */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <StatCard
-              label="Monthly Revenue"
+              label={t('act9.monthlyRevenue')}
               value={fmt(result.revenue)}
               sub={fmtCompact(result.revenue) !== fmt(result.revenue) ? fmtCompact(result.revenue) : undefined}
             />
             <StatCard
-              label="Gross Profit"
+              label={t('act9.grossProfit')}
               value={fmt(result.grossProfit)}
               sub={`${result.grossMarginPct.toFixed(1)}% margin`}
               positive={result.grossProfit > 0}
               negative={result.grossProfit < 0}
             />
             <StatCard
-              label={isProfit ? 'Operating Profit' : isLoss ? 'Operating Loss' : 'Operating Result'}
+              label={isProfit ? t('act9.operatingProfit') : isLoss ? t('act9.operatingLoss') : t('act9.operatingResult')}
               value={`${isProfit ? '+' : isLoss ? '−' : ''}${fmt(Math.abs(result.operatingResult))}`}
               positive={isProfit}
               negative={isLoss}
             />
             <StatCard
-              label="Contribution / Customer"
+              label={t('act9.contribPerCustomer')}
               value={fmt(result.contributionPerCustomer)}
               sub={`${result.contributionMarginPct.toFixed(1)}% of price`}
               positive={result.contributionPerCustomer > 0}
               negative={result.contributionPerCustomer < 0}
             />
             <StatCard
-              label="Break-even Customers"
+              label={t('act9.breakevenCustomers')}
               value={
                 result.breakEvenCustomers === null
                   ? 'N/A'
                   : result.breakEvenCustomers.toLocaleString('en-IN')
               }
             />
-            <StatCard label="CAC Payback" value={cacPaybackText} />
+            <StatCard label={t('act9.cacPayback')} value={cacPaybackText} />
           </div>
 
           {/* Business Flow */}
           <div className="rounded-2xl border border-slate-200 bg-white p-5">
             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-4">
-              Monthly Financial Flow
+              {t('act9.monthlyFinancialFlow')}
             </h3>
             <BusinessFlow
               revenue={result.revenue}
@@ -653,7 +654,7 @@ export function StartupEconomics() {
           {/* Unit Economics */}
           <div className="rounded-2xl border border-slate-200 bg-white p-5">
             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-4">
-              Unit Economics (Per Customer)
+              {t('act9.unitEconomics')}
             </h3>
             <div className="space-y-2">
               {[
@@ -699,7 +700,7 @@ export function StartupEconomics() {
           {/* Break-even visual */}
           <div className="rounded-2xl border border-slate-200 bg-white p-5">
             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-4">
-              Break-even Position
+              {t('act9.breakevenPosition')}
             </h3>
             <BreakEvenVisual customers={inputs.customers} breakEven={result.breakEvenCustomers} />
           </div>
@@ -707,7 +708,7 @@ export function StartupEconomics() {
           {/* Churn / customer flow */}
           <div className="rounded-2xl border border-slate-200 bg-white p-5">
             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-4">
-              Customer Flow (This Month)
+              {t('act9.customerFlow')}
             </h3>
             <div className="space-y-1.5 text-sm">
               <div className="flex justify-between px-3 py-2 bg-slate-50 rounded-lg">
@@ -741,7 +742,7 @@ export function StartupEconomics() {
 
       {/* Price experiment */}
       <div className="rounded-2xl border border-slate-200 bg-white p-5">
-        <h3 className="font-bold text-slate-800 mb-1">What if the price changes?</h3>
+        <h3 className="font-bold text-slate-800 mb-1">{t('act9.whatIfPrice')}</h3>
         <p className="text-xs text-slate-500 mb-4">
           All other inputs remain the same. Only price varies.
         </p>
@@ -749,11 +750,11 @@ export function StartupEconomics() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-100">
-                <th className="text-left py-2 px-3 text-xs font-semibold text-slate-500">Scenario</th>
+                <th className="text-left py-2 px-3 text-xs font-semibold text-slate-500">{t('act9.tableHeaders.scenario')}</th>
                 <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">Price</th>
-                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">Revenue</th>
-                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">Contribution/cust</th>
-                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">Operating result</th>
+                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">{t('act9.tableHeaders.revenue')}</th>
+                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">{t('act9.contribPerCustomer')}</th>
+                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">{t('act9.tableHeaders.operatingResult')}</th>
                 <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">Break-even</th>
               </tr>
             </thead>
@@ -786,7 +787,7 @@ export function StartupEconomics() {
 
       {/* Customer scale experiment */}
       <div className="rounded-2xl border border-slate-200 bg-white p-5">
-        <h3 className="font-bold text-slate-800 mb-1">What if the customer count changes?</h3>
+        <h3 className="font-bold text-slate-800 mb-1">{t('act9.whatIfCustomers')}</h3>
         <p className="text-xs text-slate-500 mb-4">
           Fixed costs stay constant — this shows operating leverage in action.
         </p>
@@ -794,11 +795,11 @@ export function StartupEconomics() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-100">
-                <th className="text-left py-2 px-3 text-xs font-semibold text-slate-500">Scenario</th>
-                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">Customers</th>
-                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">Revenue</th>
-                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">Gross profit</th>
-                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">Operating result</th>
+                <th className="text-left py-2 px-3 text-xs font-semibold text-slate-500">{t('act9.tableHeaders.scenario')}</th>
+                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">{t('act9.tableHeaders.customers')}</th>
+                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">{t('act9.tableHeaders.revenue')}</th>
+                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">{t('act9.grossProfit')}</th>
+                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">{t('act9.tableHeaders.operatingResult')}</th>
               </tr>
             </thead>
             <tbody>
@@ -825,7 +826,7 @@ export function StartupEconomics() {
 
       {/* Cost experiment */}
       <div className="rounded-2xl border border-slate-200 bg-white p-5">
-        <h3 className="font-bold text-slate-800 mb-1">What if variable costs change?</h3>
+        <h3 className="font-bold text-slate-800 mb-1">{t('act9.whatIfVariableCost')}</h3>
         <p className="text-xs text-slate-500 mb-4">
           All other inputs remain the same. Only variable cost per customer varies.
         </p>
@@ -833,11 +834,11 @@ export function StartupEconomics() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-100">
-                <th className="text-left py-2 px-3 text-xs font-semibold text-slate-500">Scenario</th>
+                <th className="text-left py-2 px-3 text-xs font-semibold text-slate-500">{t('act9.tableHeaders.scenario')}</th>
                 <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">Var. cost/cust</th>
-                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">Contribution/cust</th>
-                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">Gross margin</th>
-                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">Operating result</th>
+                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">{t('act9.contribPerCustomer')}</th>
+                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">{t('act9.tableHeaders.grossMargin')}</th>
+                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">{t('act9.tableHeaders.operatingResult')}</th>
                 <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500">Break-even</th>
               </tr>
             </thead>
@@ -872,9 +873,7 @@ export function StartupEconomics() {
 
       {/* Disclaimer */}
       <p className="text-xs text-slate-400 leading-relaxed border-t border-slate-100 pt-4">
-        This simulator uses fictional example values for illustration only. Numbers entered here do
-        not constitute financial, business, or investment advice. All calculations are local to your
-        browser and are not saved or shared.
+        {t('act9.disclaimer')}
       </p>
     </div>
   )

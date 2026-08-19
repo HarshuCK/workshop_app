@@ -24,6 +24,7 @@ import type {
   TenureOption,
   RateOption,
 } from '../../utils/loan'
+import { useLanguage } from '../../i18n/LanguageContext'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -155,16 +156,17 @@ function StatCard({
 // ── Donut chart ───────────────────────────────────────────────────────────────
 
 function PrincipalInterestDonut({ principal, interest }: { principal: number; interest: number }) {
+  const { t } = useLanguage()
   const total = principal + interest
   if (total <= 0) return null
   const data = [
-    { name: 'Principal', value: Math.round(principal), color: '#6366f1' },
-    { name: 'Interest', value: Math.round(interest), color: '#f59e0b' },
+    { name: t('act6.principalBorrowed'), value: Math.round(principal), color: '#6366f1' },
+    { name: t('act6.totalInterest'), value: Math.round(interest), color: '#f59e0b' },
   ]
   return (
     <div>
       <p className="mb-3 text-xs font-bold uppercase tracking-wide text-slate-500">
-        Principal vs Interest
+        {t('act6.principalBorrowed')} vs {t('act6.totalInterest')}
       </p>
       <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
         <div className="relative h-36 w-36 flex-shrink-0">
@@ -191,7 +193,7 @@ function PrincipalInterestDonut({ principal, interest }: { principal: number; in
           ))}
           <div className="flex items-center gap-3 border-t border-slate-100 pt-2">
             <span className="h-3 w-3 flex-shrink-0" />
-            <span className="flex-1 text-sm font-semibold text-slate-700">Total Repayment</span>
+            <span className="flex-1 text-sm font-semibold text-slate-700">{t('act6.totalRepayment')}</span>
             <span className="tabular-nums text-sm font-bold text-slate-900">{formatINR(total)}</span>
           </div>
         </div>
@@ -268,11 +270,12 @@ function TenureComparison({
   options: TenureOption[]
   currentYears: number
 }) {
+  const { t } = useLanguage()
   if (options.length === 0) return null
   return (
     <div className="space-y-3">
       <div>
-        <h3 className="text-base font-bold text-slate-900">What changes when the tenure changes?</h3>
+        <h3 className="text-base font-bold text-slate-900">{t('act6.whatIfTenure')}</h3>
         <p className="mt-0.5 text-xs text-slate-500">Same principal and rate, different duration.</p>
       </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -288,19 +291,19 @@ function TenureComparison({
               }`}
             >
               <p className={`mb-2 text-sm font-bold ${isCurrent ? 'text-indigo-700' : 'text-slate-700'}`}>
-                {opt.years} {opt.years === 1 ? 'Year' : 'Years'}{isCurrent ? ' ← current' : ''}
+                {opt.years} {opt.years === 1 ? 'Year' : 'Years'}{isCurrent ? ' ←' : ''}
               </p>
               <div className="space-y-1.5 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-slate-500">EMI</span>
+                  <span className="text-slate-500">{t('act6.monthlyEMI')}</span>
                   <span className="font-bold tabular-nums text-slate-900">{formatINR(opt.emi)}/mo</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Total Interest</span>
+                  <span className="text-slate-500">{t('act6.totalInterest')}</span>
                   <span className="font-semibold tabular-nums text-amber-700">{formatINR(opt.totalInterest)}</span>
                 </div>
                 <div className="flex justify-between border-t border-slate-100 pt-1.5">
-                  <span className="text-slate-500">Total Repayment</span>
+                  <span className="text-slate-500">{t('act6.totalRepayment')}</span>
                   <span className="font-semibold tabular-nums text-slate-900">{formatINR(opt.totalRepayment)}</span>
                 </div>
               </div>
@@ -310,7 +313,7 @@ function TenureComparison({
       </div>
       {/* Total interest bar chart */}
       <div className="mt-2">
-        <p className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-400">Total Interest by Tenure</p>
+        <p className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-400">{t('act6.totalInterest')} by Tenure</p>
         <div className="overflow-x-auto rounded-xl border border-slate-100 bg-white p-4">
           <ResponsiveContainer width="100%" height={160}>
             <BarChart data={options.map(o => ({ name: `${o.years}y`, interest: Math.round(o.totalInterest) }))} barSize={28}>
@@ -339,11 +342,12 @@ function RateComparison({
   options: RateOption[]
   currentRate: number
 }) {
+  const { t } = useLanguage()
   if (options.length === 0) return null
   return (
     <div className="space-y-3">
       <div>
-        <h3 className="text-base font-bold text-slate-900">What if the rate changes?</h3>
+        <h3 className="text-base font-bold text-slate-900">{t('act6.whatIfRate')}</h3>
         <p className="mt-0.5 text-xs text-slate-500">Same principal and tenure, different annual rate.</p>
       </div>
       <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
@@ -359,15 +363,15 @@ function RateComparison({
               }`}
             >
               <p className={`mb-2 text-sm font-bold ${isCurrent ? 'text-indigo-700' : 'text-slate-700'}`}>
-                {opt.rate}%{isCurrent ? ' ← current' : ''}
+                {opt.rate}%{isCurrent ? ' ←' : ''}
               </p>
               <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-slate-500">EMI</span>
+                  <span className="text-slate-500">{t('act6.monthlyEMI')}</span>
                   <span className="font-bold tabular-nums text-slate-900">{formatINR(opt.emi)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Interest</span>
+                  <span className="text-slate-500">{t('act6.totalInterest')}</span>
                   <span className="font-semibold tabular-nums text-amber-700">{formatINR(opt.totalInterest)}</span>
                 </div>
               </div>
@@ -382,6 +386,7 @@ function RateComparison({
 // ── Amortization table ────────────────────────────────────────────────────────
 
 function AmortizationTable({ years, totalYears }: { years: AmortizationYear[]; totalYears: number }) {
+  const { t } = useLanguage()
   const [expanded, setExpanded] = useState(false)
 
   // For loans > 15 years show first 3, selected milestones, last year unless expanded
@@ -396,14 +401,14 @@ function AmortizationTable({ years, totalYears }: { years: AmortizationYear[]; t
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-base font-bold text-slate-900">Annual Repayment Breakdown</h3>
+        <h3 className="text-base font-bold text-slate-900">{t('act6.annualRepayment')}</h3>
         {totalYears > 15 && (
           <button
             type="button"
             onClick={() => setExpanded(e => !e)}
             className="text-xs font-semibold text-indigo-600 hover:text-indigo-700"
           >
-            {expanded ? 'Show fewer rows' : `View all ${totalYears} years`}
+            {expanded ? t('act6.showFewerRows') : t('act6.viewAllYears').replace('{n}', String(totalYears))}
           </button>
         )}
       </div>
@@ -411,7 +416,7 @@ function AmortizationTable({ years, totalYears }: { years: AmortizationYear[]; t
         <table className="min-w-full text-sm">
           <thead className="bg-slate-50">
             <tr>
-              {['Year', 'Opening Balance', 'Principal Paid', 'Interest Paid', 'Closing Balance'].map(h => (
+              {[t('act6.tableYear'), t('act6.tableOpening'), t('act6.tablePrincipal'), t('act6.tableInterest'), t('act6.tableClosing')].map(h => (
                 <th key={h} className="px-3 py-2.5 text-right text-xs font-bold uppercase tracking-wide text-slate-400 first:text-left">
                   {h}
                 </th>
@@ -421,7 +426,7 @@ function AmortizationTable({ years, totalYears }: { years: AmortizationYear[]; t
           <tbody className="divide-y divide-slate-50">
             {rows.map(row => (
               <tr key={row.year} className="hover:bg-slate-50">
-                <td className="px-3 py-2 font-semibold text-slate-700">Yr {row.year}</td>
+                <td className="px-3 py-2 font-semibold text-slate-700">{t('act6.tableYear')} {row.year}</td>
                 <td className="px-3 py-2 text-right tabular-nums text-slate-700">{formatINR(row.openingBalance)}</td>
                 <td className="px-3 py-2 text-right tabular-nums font-medium text-indigo-700">{formatINR(row.principalPaid)}</td>
                 <td className="px-3 py-2 text-right tabular-nums font-medium text-amber-700">{formatINR(row.interestPaid)}</td>
@@ -438,6 +443,7 @@ function AmortizationTable({ years, totalYears }: { years: AmortizationYear[]; t
 // ── Main component ────────────────────────────────────────────────────────────
 
 export function EMISimulator() {
+  const { t } = useLanguage()
   const [purchasePrice, setPurchasePrice] = useState(DEFAULTS.purchasePrice)
   const [downPayment, setDownPayment] = useState(DEFAULTS.downPayment)
   const [rate, setRate] = useState(DEFAULTS.rate)
@@ -533,31 +539,31 @@ export function EMISimulator() {
     <div className="space-y-8">
       {/* Headline */}
       <div>
-        <h2 className="text-xl font-bold text-slate-900">What does borrowing actually cost?</h2>
-        <p className="mt-1 text-sm text-slate-500">
-          Change the amount, rate and tenure to see the full cost behind an EMI.
-        </p>
+        <h2 className="text-xl font-bold text-slate-900">{t('act6.intro')}</h2>
       </div>
 
       {/* Example presets */}
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs font-bold uppercase tracking-wide text-slate-400">Quick start:</span>
-        {EXAMPLE_PRESETS.map(ex => (
-          <button
-            key={ex.label}
-            type="button"
-            onClick={() => applyExample(ex)}
-            className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700"
-          >
-            {ex.label}: {formatINR(ex.price)}
-          </button>
-        ))}
+        <span className="text-xs font-bold uppercase tracking-wide text-slate-400">{t('act6.quickStart')}</span>
+        {EXAMPLE_PRESETS.map((ex, i) => {
+          const label = [t('act6.presetA'), t('act6.presetB'), t('act6.presetC')][i]
+          return (
+            <button
+              key={ex.label}
+              type="button"
+              onClick={() => applyExample(ex)}
+              className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700"
+            >
+              {label}: {formatINR(ex.price)}
+            </button>
+          )
+        })}
         <button
           type="button"
           onClick={reset}
           className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-500 shadow-sm hover:bg-slate-50"
         >
-          ↺ Reset
+          {t('act6.reset')}
         </button>
       </div>
 
@@ -566,12 +572,12 @@ export function EMISimulator() {
 
         {/* Left: Controls */}
         <div className="flex flex-col gap-5 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm lg:w-80 lg:flex-shrink-0">
-          <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Loan Parameters</p>
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-400">{t('act6.loanParameters')}</p>
 
           {/* Purchase Price */}
           <div className="space-y-1.5">
             <label htmlFor="purchase-price" className="text-xs font-bold uppercase tracking-wide text-slate-500">
-              Purchase / Asset Price
+              {t('act6.purchasePrice')}
             </label>
             <div className="relative">
               <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">₹</span>
@@ -602,7 +608,7 @@ export function EMISimulator() {
           <div className="space-y-1.5">
             <div className="flex items-baseline justify-between">
               <label htmlFor="down-payment" className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                Down Payment
+                {t('act6.downPayment')}
               </label>
               <span className="text-xs font-semibold text-slate-500">
                 {downPct.toFixed(0)}% of {formatINR(safePrice)}
@@ -651,7 +657,7 @@ export function EMISimulator() {
 
           {/* Loan Amount (derived) */}
           <div className="rounded-xl bg-slate-50 px-4 py-3">
-            <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Loan Amount</p>
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-400">{t('act6.loanAmount')}</p>
             <p className="mt-1 text-xl font-bold text-indigo-700 tabular-nums">{formatINR(summary.principal)}</p>
             {noBorrow && (
               <p className="mt-1 text-xs italic text-slate-500">No borrowed amount under the current values.</p>
@@ -662,7 +668,7 @@ export function EMISimulator() {
           <div className="space-y-1.5">
             <div className="flex items-baseline justify-between">
               <label htmlFor="rate-input" className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                Annual Interest Rate
+                {t('act6.annualInterestRate')}
               </label>
               <div className="flex items-center gap-1">
                 <input
@@ -710,7 +716,7 @@ export function EMISimulator() {
           {/* Tenure */}
           <SliderControl
             id="tenure"
-            label="Loan Tenure"
+            label={t('act6.loanTenure')}
             value={tenureYears}
             min={1}
             max={30}
@@ -727,7 +733,7 @@ export function EMISimulator() {
 
           {/* EMI hero */}
           <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-5 shadow-sm">
-            <p className="mb-1 text-xs font-bold uppercase tracking-wide text-indigo-500">Monthly EMI</p>
+            <p className="mb-1 text-xs font-bold uppercase tracking-wide text-indigo-500">{t('act6.monthlyEMI')}</p>
             <p className="text-4xl font-bold tabular-nums text-indigo-700">
               {formatINR(summary.emi)}
               <span className="ml-1 text-base font-semibold text-indigo-400">/month</span>
@@ -739,16 +745,15 @@ export function EMISimulator() {
 
           {/* Summary grid */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            <StatCard label="Principal Borrowed" value={formatINR(summary.principal)} />
-            <StatCard label="Total Interest" value={formatINR(summary.totalInterest)} accent="amber" />
-            <StatCard label="Total Loan Repayment" value={formatINR(summary.totalRepayment)} />
-            <StatCard label="Down Payment" value={formatINR(summary.downPayment)} />
+            <StatCard label={t('act6.principalBorrowed')} value={formatINR(summary.principal)} />
+            <StatCard label={t('act6.totalInterest')} value={formatINR(summary.totalInterest)} accent="amber" />
+            <StatCard label={t('act6.totalRepayment')} value={formatINR(summary.totalRepayment)} />
+            <StatCard label={t('act6.downPayment')} value={formatINR(summary.downPayment)} />
             <StatCard label="Total Purchase Outflow" value={formatINR(summary.totalOutflow)} highlight accent="indigo" />
             {summary.principal > 0 && (
               <StatCard
-                label="Interest as % of Principal"
+                label={t('act6.interestToLoan')}
                 value={`${summary.interestPct.toFixed(1)}%`}
-                sub="of amount borrowed"
               />
             )}
           </div>
@@ -826,9 +831,7 @@ export function EMISimulator() {
 
       {/* Disclaimer */}
       <p className="rounded-xl bg-slate-50 px-4 py-3 text-xs leading-relaxed text-slate-500">
-        This simulator provides mathematical estimates using the values you enter. Actual loan
-        repayment amounts, charges, fees and lender terms may differ. This tool does not provide
-        financial advice.
+        {t('act6.disclaimer')}
       </p>
     </div>
   )
