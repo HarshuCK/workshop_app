@@ -2,7 +2,7 @@ import type { LucideIcon } from 'lucide-react'
 import {
   TrendingUp,
   Clock,
-  PieChart,
+  PiggyBank,
   BarChart2,
   Wallet,
   CreditCard,
@@ -64,14 +64,14 @@ export const activities: Activity[] = [
     },
   },
   {
-    id: 'salary-breakdown',
+    id: 'retirement-savings',
     number: 3,
-    title: 'Salary Breakdown Simulator',
+    title: 'Retirement Savings Simulator',
     shortDescription:
-      'Break down a salary into taxes, deductions, and actual take-home pay.',
-    category: 'Finance',
-    route: '/activity/salary-breakdown',
-    icon: PieChart,
+      'See how much you may need to save today to fund your expenses after retirement.',
+    category: 'Financial Planning',
+    route: '/activity/retirement-savings',
+    icon: PiggyBank,
     colors: {
       iconBg: 'bg-violet-100',
       iconText: 'text-violet-600',

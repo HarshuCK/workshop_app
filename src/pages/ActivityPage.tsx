@@ -7,7 +7,7 @@ import { PageContainer } from '../components/PageContainer'
 import { Button } from '../components/Button'
 import { FutureMoneyCalculator } from '../activities/future-money/FutureMoneyCalculator'
 import { DayScheduler } from '../activities/day-scheduler/DayScheduler'
-import { SalaryBreakdown } from '../activities/salary-breakdown/SalaryBreakdown'
+import { RetirementSavings } from '../activities/retirement-savings/RetirementSavings'
 import { CompoundGrowth } from '../activities/compound-growth/CompoundGrowth'
 import { AllocationChallenge } from '../activities/allocation/AllocationChallenge'
 import { EMISimulator } from '../activities/emi/EMISimulator'
@@ -16,7 +16,7 @@ import { ResourceChallenge } from '../activities/resource/ResourceChallenge'
 import { StartupEconomics } from '../activities/startup/StartupEconomics'
 import { useLanguage } from '../i18n/LanguageContext'
 
-const WIDE_ACTIVITIES = new Set(['future-money', 'day-scheduler', 'salary-breakdown', 'compound-growth', '100-allocation', 'emi', 'communication', 'resource-allocation', 'startup-economics'])
+const WIDE_ACTIVITIES = new Set(['future-money', 'day-scheduler', 'retirement-savings', 'compound-growth', '100-allocation', 'emi', 'communication', 'resource-allocation', 'startup-economics'])
 
 function PlaceholderContent() {
   const navigate = useNavigate()
@@ -40,7 +40,7 @@ function PlaceholderContent() {
 function ActivityContent({ id }: { id: string }) {
   if (id === 'future-money') return <FutureMoneyCalculator />
   if (id === 'day-scheduler') return <DayScheduler />
-  if (id === 'salary-breakdown') return <SalaryBreakdown />
+  if (id === 'retirement-savings') return <RetirementSavings />
   if (id === 'compound-growth') return <CompoundGrowth />
   if (id === '100-allocation') return <AllocationChallenge />
   if (id === 'emi') return <EMISimulator />
