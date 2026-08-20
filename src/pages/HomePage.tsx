@@ -1,10 +1,12 @@
 import { Zap } from 'lucide-react'
 import { activities } from '../data/activities'
 import { Header } from '../components/Header'
+import { Footer } from '../components/Footer'
 import { PageContainer } from '../components/PageContainer'
 import { ActivityCard } from '../components/ActivityCard'
 import { SectionHeading } from '../components/SectionHeading'
 import { useLanguage } from '../i18n/LanguageContext'
+import bannerImg from '../assets/career_katta_banner.jpeg'
 
 export default function HomePage() {
   const { t } = useLanguage()
@@ -32,6 +34,20 @@ export default function HomePage() {
         </PageContainer>
       </div>
 
+      {/* Official institutional banner */}
+      <PageContainer className="pt-6 pb-2">
+        <div className="overflow-hidden rounded-xl border border-slate-200">
+          <img
+            src={bannerImg}
+            alt="Career Katta and MITSC official institutional banner"
+            width={1600}
+            height={765}
+            className="block h-auto w-full"
+            style={{ aspectRatio: '1600/765' }}
+          />
+        </div>
+      </PageContainer>
+
       {/* Activities grid */}
       <PageContainer className="py-10">
         <SectionHeading
@@ -46,6 +62,8 @@ export default function HomePage() {
           ))}
         </div>
       </PageContainer>
+
+      <Footer />
     </div>
   )
 }

@@ -10,6 +10,9 @@ const en = {
     allActivities: 'All Activities',
     chooseActivity: 'Choose any activity to get started',
   },
+  footer: {
+    developedBy: 'Developed by YCAI StarTech and Harshvardhan Patil',
+  },
   nav: {
     backToActivities: 'Back to Activities',
     backToActivitiesLabel: 'Back to all activities',
@@ -482,6 +485,9 @@ const mr = {
     tagline: 'इंटरॅक्टिव्ह उपक्रम. व्यावहारिक शिक्षण.',
     allActivities: 'सर्व उपक्रम',
     chooseActivity: 'सुरू करण्यासाठी कोणताही उपक्रम निवडा',
+  },
+  footer: {
+    developedBy: 'विकसित केले: YCAI StarTech आणि Harshvardhan Patil',
   },
   nav: {
     backToActivities: 'उपक्रमांकडे परत',

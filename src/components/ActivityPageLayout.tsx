@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react'
 import type { Activity } from '../data/activities'
 import { Button } from './Button'
 import { Header } from './Header'
+import { Footer } from './Footer'
 import { PageContainer } from './PageContainer'
 import { useLanguage } from '../i18n/LanguageContext'
 
@@ -76,6 +77,8 @@ export function ActivityPageLayout({ activity, children, wide = false }: Activit
           {children}
         </div>
       </PageContainer>
+
+      <Footer />
     </div>
   )
 }
